@@ -164,9 +164,10 @@ export function GameProvider({ children }: GameProviderProps) {
           // Zeit reduzieren
           const newTimeLeft = house.timeLeft - 1
 
-          // Wenn Zeit abgelaufen ist, Punkt abziehen und roten Blitz anzeigen
+          // Wenn Zeit abgelaufen ist, 5 Punkte abziehen, 30 Sekunden von der Restlaufzeit abziehen und roten Blitz anzeigen
           if (newTimeLeft <= 0) {
-            setScore((prevScore: number) => Math.max(0, prevScore - 1))
+            setScore((prevScore: number) => Math.max(0, prevScore - 5)) // 5 Punkte abziehen
+            setTimeLeft((prev: number) => Math.max(1, prev - 30)) // 30 Sekunden von der Restlaufzeit abziehen, mindestens 1 Sekunde übrig lassen
             setShowRedFlash(true)
             setTimeout(() => setShowRedFlash(false), 300)
             return { ...house, timeLeft: 0 }
@@ -284,12 +285,20 @@ export function GameProvider({ children }: GameProviderProps) {
 
     // Punkte vergeben und entsprechende Effekte anzeigen
     if (house.preferredSource === source) {
-      setScore((prev: number) => prev + 2) // 2 Punkte für bevorzugte Energiequelle
+      // Richtige Energie liefern: 10 Punkte + 5 Sekunden Restlaufzeit
+      setScore((prev: number) => prev + 10)
+      setTimeLeft((prev: number) => prev + 5) // Restlaufzeit um 5 Sekunden erhöhen
       setConfettiPosition({ x: mouseX, y: mouseY }) // Position für Konfetti setzen
-      setShowConfetti(true) // Konfetti für 2 Punkte
+      setShowConfetti(true) // Konfetti für 10 Punkte
       setTimeout(() => setShowConfetti(false), 1000)
+    } else if (source !== "nuclear") {
+      // Falsche Energie liefern, aber nicht Atom: 5 Punkte
+      setScore((prev: number) => prev + 5)
+      setShowLightFlash(true) // Lichtblitz für 5 Punkte
+      setTimeout(() => setShowLightFlash(false), 300)
     } else {
-      setScore((prev: number) => prev + 1) // 1 Punkt für andere Energiequelle
+      // Falsche Energie liefern, aber Atom: 1 Punkt
+      setScore((prev: number) => prev + 1)
       setShowLightFlash(true) // Lichtblitz für 1 Punkt
       setTimeout(() => setShowLightFlash(false), 300)
     }
