@@ -1,0 +1,11 @@
+{
+  "memoryBankDir": "memory-bank",
+  "files": [
+    "activeContext.md",
+    "decisionLog.md",
+    "productContext.md",
+    "progress.md",
+    "systemPatterns.md"
+  ],
+  "defaultFile": "productContext.md"
+}
