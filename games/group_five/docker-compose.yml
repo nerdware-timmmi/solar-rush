@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: solar-rush-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - solar-rush-network
+
+  # Hier können später weitere Services hinzugefügt werden, wie z.B.:
+  # - Backend-API
+  # - Datenbank
+  # - Cache
+  # - etc.
+
+networks:
+  solar-rush-network:
+    driver: bridge
+
+volumes:
+  node_modules:
+  next-cache:
+
+# Für Entwicklungsumgebung kann folgende Konfiguration verwendet werden:
+# (Auskommentiert, da die Produktionskonfiguration oben verwendet wird)
+
+# services:
+#   frontend-dev:
+#     build:
+#       context: ./frontend
+#       dockerfile: Dockerfile.dev  # Separates Dockerfile für Entwicklung
+#     container_name: solar-rush-frontend-dev
+#     restart: unless-stopped
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - NODE_ENV=development
+#     volumes:
+#       - ./frontend:/app
+#       - node_modules:/app/node_modules
+#       - next-cache:/app/.next/cache
+#     command: npm run dev

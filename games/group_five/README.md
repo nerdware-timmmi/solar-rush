@@ -1,96 +1,113 @@
-# Solar Rush
+# Solar Rush Frontend
 
-Solar Rush is a game that simulates energy collection from renewable sources, obstacle management, and team coordination.
+Dieses Repository enthält das Frontend für das Solar Rush Spiel, entwickelt mit Next.js, React und TypeScript.
 
-## Backend Options
+## Inhaltsverzeichnis
 
-This project offers two backend options:
+- [Voraussetzungen](#voraussetzungen)
+- [Installation und Start mit Docker](#installation-und-start-mit-docker)
+- [Entwicklung](#entwicklung)
+- [Nützliche Befehle](#nützliche-befehle)
+- [Projektstruktur](#projektstruktur)
 
-1. Cloud Server
-   - Runs on port 3001
-   - Generates random numbers between -50 and 0
+## Voraussetzungen
 
-2. Sun Server
-   - Runs on port 3000
-   - Generates random numbers between 0 and 50
-   - Provides status information (night, cloudy, sunny)
+Um das Projekt lokal auszuführen, benötigst du:
 
-## Docker Installation on Mac
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/) (in neueren Docker-Versionen bereits enthalten)
 
-### Prerequisites
+## Installation und Start mit Docker
 
-To install Docker on a Mac, you need:
-- macOS 10.15 or newer
-- At least 4 GB RAM
-- Apple ID for downloading from the Mac App Store
-
-### Installing Docker Desktop
-
-1. Visit the [Docker Desktop for Mac download page](https://www.docker.com/products/docker-desktop)
-2. Click on "Download for Mac"
-3. Open the downloaded .dmg file
-4. Drag the Docker icon to your Applications folder
-5. Open Docker from the Applications folder
-6. When prompted, enter your administrator password
-7. Wait until Docker Desktop has started (the Docker icon in the menu bar stops blinking)
-
-### Verifying the Installation
-
-Open a terminal and run the following commands to verify that Docker has been installed correctly:
-
-```bash
-docker --version
-docker-compose --version
-```
-
-## Starting the Backend Servers with Docker Compose
-
-1. Open a terminal
-2. Navigate to the project directory:
+1. Repository klonen:
    ```bash
-   cd /path/to/solar-rush/games/group_five
+   git clone <repository-url>
+   cd solar-rush
    ```
-3. Start the Docker containers in the background:
+
+2. Docker-Container starten:
    ```bash
    docker-compose up -d
    ```
-4. Check if the containers are running:
+
+3. Die Anwendung ist nun unter [http://localhost:3000](http://localhost:3000) verfügbar.
+
+## Entwicklung
+
+Für die Entwicklung empfehlen wir, die Anwendung direkt auf deinem lokalen System zu starten:
+
+1. In das Frontend-Verzeichnis wechseln:
    ```bash
-   docker-compose ps
+   cd frontend
    ```
 
-## Accessing the Backend APIs
+2. Abhängigkeiten installieren:
+   ```bash
+   npm install
+   # oder
+   yarn install
+   # oder
+   pnpm install
+   ```
 
-After starting the containers, you can access the backend APIs:
+3. Entwicklungsserver starten:
+   ```bash
+   npm run dev
+   # oder
+   yarn dev
+   # oder
+   pnpm dev
+   ```
 
-- Cloud Backend: http://localhost:3001
-- Sun Backend: http://localhost:3002
+4. Die Anwendung ist nun unter [http://localhost:3000](http://localhost:3000) verfügbar.
 
-## Stopping the Backend Servers
-
-To stop the Docker containers, run the following command:
+Alternativ kannst du auch eine Entwicklungsumgebung mit Docker verwenden. Dazu musst du die auskommentierten Zeilen in der `docker-compose.yml` aktivieren und dann folgenden Befehl ausführen:
 
 ```bash
-docker-compose down
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 ```
 
-## Viewing Logs
+## Nützliche Befehle
 
-To view the logs of the running containers:
+### Docker-Befehle
 
-```bash
-docker-compose logs
-```
+- Container starten: `docker-compose up -d`
+- Container stoppen: `docker-compose down`
+- Logs anzeigen: `docker-compose logs -f frontend`
+- Container neu bauen: `docker-compose build --no-cache frontend`
+- In den Container einsteigen: `docker-compose exec frontend sh`
 
-For continuous logs:
+### NPM/Yarn/PNPM-Befehle (lokal)
 
-```bash
-docker-compose logs -f
-```
+- Entwicklungsserver starten: `npm run dev`
+- Produktions-Build erstellen: `npm run build`
+- Produktionsversion starten: `npm run start`
+- Linting durchführen: `npm run lint`
 
-## Restarting the Containers
+## Projektstruktur
 
-To restart the containers:
+Das Projekt verwendet die standardmäßige Next.js-Struktur:
 
-```bash
-docker-compose restart
+- `app/`: Enthält die Seiten und Layouts der Anwendung (App Router)
+- `components/`: Wiederverwendbare React-Komponenten
+- `public/`: Statische Dateien wie Bilder, Sounds und Fonts
+- `styles/`: CSS-Dateien und Styling-Konfigurationen
+- `services/`: Service-Klassen für externe API-Aufrufe
+- `context/`: React Context für globalen Zustand
+
+## Docker-Konfiguration
+
+Das Projekt enthält zwei Docker-Konfigurationsdateien:
+
+1. `frontend/Dockerfile`: Für die Produktionsumgebung
+   - Verwendet einen mehrstufigen Build-Prozess
+   - Optimiert für Produktionsleistung und Sicherheit
+
+2. `docker-compose.yml`: Orchestriert die Container
+   - Definiert den Frontend-Service
+   - Konfiguriert Netzwerke und Volumes
+   - Enthält auskommentierte Entwicklungskonfiguration
+
+## Lizenz
+
+[Hier Lizenzinformationen einfügen]

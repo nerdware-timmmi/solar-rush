@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: solar-rush-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+      - WATCHPACK_POLLING=true  # Für besseres Hot-Reloading in Docker
+    volumes:
+      - ./frontend:/app
+      - node_modules:/app/node_modules
+      - next-cache:/app/.next/cache
+    command: npm run dev
+    networks:
+      - solar-rush-network
+
+networks:
+  solar-rush-network:
+    driver: bridge
+
+volumes:
+  node_modules:
+  next-cache:

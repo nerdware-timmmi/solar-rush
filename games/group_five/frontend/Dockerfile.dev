@@ -1,0 +1,26 @@
+# Entwicklungs-Dockerfile für das Frontend
+FROM node:20-alpine
+
+# Arbeitsverzeichnis setzen
+WORKDIR /app
+
+# Abhängigkeiten kopieren
+COPY package.json package-lock.json* pnpm-lock.yaml* ./
+
+# Abhängigkeiten installieren
+# Wir verwenden hier nicht --frozen-lockfile, um Flexibilität in der Entwicklung zu ermöglichen
+RUN npm install || yarn install || pnpm install
+
+# Umgebungsvariablen setzen
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Port freigeben
+EXPOSE 3000
+
+# Anwendung im Entwicklungsmodus starten
+CMD ["npm", "run", "dev"]
+
+# Hinweis: Der Quellcode wird nicht in das Image kopiert,
+# sondern über ein Volume in docker-compose.yml bereitgestellt,
+# um Hot-Reloading zu ermöglichen.
