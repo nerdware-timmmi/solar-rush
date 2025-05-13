@@ -6,7 +6,8 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 export type EnergySource = "wind" | "solar" | "nuclear"
 
 export interface House {
-  id: number
+  id: string // UUID als eindeutige ID
+  name: string // Name des Hauses (lustiger Tiername)
   requiredEnergy: number
   preferredSource: EnergySource
   timeLeft: number // Zeit in Sekunden, bis das Haus verschwindet
@@ -30,7 +31,7 @@ interface GameContextType {
   // Aktionen
   startGame: () => void
   resetGame: () => void
-  supplyEnergy: (houseId: number, source: EnergySource) => void
+  supplyEnergy: (houseId: string, source: EnergySource) => void
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -61,7 +62,7 @@ export function GameProvider({ children }: GameProviderProps) {
 
   // Häuser
   const [houses, setHouses] = useState<House[]>([])
-  const [houseIdCounter, setHouseIdCounter] = useState(0)
+  const [usedAnimalNames, setUsedAnimalNames] = useState<string[]>([])
 
   // Timer für das Spiel
   useEffect(() => {
@@ -111,18 +112,32 @@ export function GameProvider({ children }: GameProviderProps) {
     return () => clearInterval(nuclearTimer)
   }, [gameActive])
 
-  // Neue Häuser generieren (alle 20 Sekunden)
+  // Neue Häuser generieren (zufällig alle 3-8 Sekunden)
   useEffect(() => {
     if (!gameActive) return
 
     // Erstes Haus sofort erstellen
     createNewHouse()
 
-    const houseTimer = setInterval(() => {
-      createNewHouse()
-    }, 20000) // Alle 20 Sekunden
+    let houseTimer: NodeJS.Timeout | null = null
 
-    return () => clearInterval(houseTimer)
+    // Rekursive Funktion, die nach zufälliger Zeit ein neues Haus erstellt
+    const scheduleNextHouse = () => {
+      // Zufällige Zeit zwischen 3 und 8 Sekunden
+      const randomTime = Math.floor(Math.random() * 5000) + 3000 // 3000-8000 ms
+
+      houseTimer = setTimeout(() => {
+        createNewHouse()
+        scheduleNextHouse() // Nächstes Haus planen
+      }, randomTime)
+    }
+
+    // Starte den Prozess
+    scheduleNextHouse()
+
+    return () => {
+      if (houseTimer) clearTimeout(houseTimer)
+    }
   }, [gameActive])
 
   // Häuser aktualisieren (Zeit reduzieren)
@@ -149,6 +164,26 @@ export function GameProvider({ children }: GameProviderProps) {
     return () => clearInterval(houseUpdateTimer)
   }, [gameActive, houses])
 
+  // Funktion zur Generierung einer einfachen UUID
+  const generateUUID = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  };
+
+  // Liste mit lustigen Tiernamen
+  const animalNames = [
+    "Quakfrosch", "Hüpfhase", "Schnattergans", "Brüllbär", "Flatterfledermaus",
+    "Kicherhyäne", "Trampelelefant", "Schnarchwal", "Wackelente", "Zappelzebra",
+    "Kullerpanda", "Stinkstinktier", "Knuddeltiger", "Plapperpapagei", "Wuschelhund",
+    "Krabbenkrabbe", "Schleichkatze", "Hopskänguru", "Knurrfuchs", "Purzelpinguin",
+    "Schnatternilpferd", "Kuschelkoala", "Wackeldackel", "Tapsibär", "Flitzfisch",
+    "Quietschmaus", "Stolpergiraffe", "Kullereule", "Schnüffelwiesel", "Watschelente",
+    "Hopsehase", "Brummelbär", "Schleichluchs", "Flitzemaus", "Kuschelkäfer",
+    "Wackelpinguin", "Schnatterschwan", "Kullermops", "Hüpfkänguru", "Flattereule"
+  ]
+
   // Neues Haus erstellen
   const createNewHouse = () => {
     // Nur Wind und Solar als bevorzugte Energiequellen
@@ -156,19 +191,39 @@ export function GameProvider({ children }: GameProviderProps) {
     const randomSource = energySources[Math.floor(Math.random() * energySources.length)]
     const randomEnergy = Math.floor(Math.random() * 2001) + 500 // 500-2500 KW
 
+    // Eindeutige UUID für das Haus generieren
+    const newId = generateUUID()
+
+    // Verfügbare Tiernamen (die noch nicht verwendet wurden)
+    const availableNames = animalNames.filter(name => !usedAnimalNames.includes(name))
+
+    // Wenn alle Namen verwendet wurden, setze die verwendeten Namen zurück
+    if (availableNames.length === 0) {
+      setUsedAnimalNames([])
+      availableNames.push(...animalNames)
+    }
+
+    // Zufälligen Tiernamen auswählen
+    const randomIndex = Math.floor(Math.random() * availableNames.length)
+    const randomName = availableNames[randomIndex]
+
+    // Namen als verwendet markieren
+    setUsedAnimalNames(prev => [...prev, randomName])
+
     const newHouse: House = {
-      id: houseIdCounter,
+      id: newId,
+      name: randomName,
       requiredEnergy: randomEnergy,
       preferredSource: randomSource,
       timeLeft: 60 // 60 Sekunden Zeit, um Energie zu liefern
     }
 
-    setHouses((prev: House[]) => [...prev, newHouse])
-    setHouseIdCounter((prev: number) => prev + 1)
+    // Haus hinzufügen
+    setHouses(prev => [...prev, newHouse])
   }
 
   // Energie an ein Haus liefern
-  const supplyEnergy = (houseId: number, source: EnergySource) => {
+  const supplyEnergy = (houseId: string, source: EnergySource) => {
     // Haus finden
     const houseIndex = houses.findIndex((h: House) => h.id === houseId)
     if (houseIndex === -1) return
@@ -212,8 +267,9 @@ export function GameProvider({ children }: GameProviderProps) {
       setScore((prev: number) => prev + 1) // 1 Punkt für andere Energiequelle
     }
 
-    // Haus entfernen
-    setHouses((prev: House[]) => prev.filter((h: House) => h.id !== houseId))
+    // Namen freigeben und Haus entfernen
+    setUsedAnimalNames(prev => prev.filter(name => name !== house.name))
+    setHouses(prev => prev.filter(h => h.id !== houseId))
   }
 
   // Spiel starten
@@ -223,7 +279,7 @@ export function GameProvider({ children }: GameProviderProps) {
     setScore(0)
     setTimeLeft(300) // 5 Minuten
     setHouses([])
-    setHouseIdCounter(0)
+    setUsedAnimalNames([])
 
     // Initiale Energiewerte setzen
     setWindEnergy(Math.floor(Math.random() * 501) + 500) // 500-1000 KW

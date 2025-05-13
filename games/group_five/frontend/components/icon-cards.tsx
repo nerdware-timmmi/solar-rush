@@ -15,7 +15,7 @@ export default function IconCards() {
   ]
 
   // Funktion zum Liefern von Energie an ein Haus
-  const handleSupplyEnergy = (source: EnergySource, houseId: number) => {
+  const handleSupplyEnergy = (source: EnergySource, houseId: string) => {
     supplyEnergy(houseId, source)
   }
 
@@ -48,7 +48,7 @@ export default function IconCards() {
                             : "bg-muted text-muted-foreground cursor-not-allowed"
                         }`}
                       >
-                        Haus #{house.id + 1} ({house.requiredEnergy} kW)
+                        Haus {house.name} ({house.requiredEnergy} kW)
                       </button>
                     ))}
                   </div>

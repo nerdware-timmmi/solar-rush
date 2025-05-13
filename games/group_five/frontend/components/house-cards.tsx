@@ -60,7 +60,7 @@ export default function HouseCards() {
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="flex items-center justify-center mb-2">
                 <Home className="h-10 w-10 mr-2 text-primary" />
-                <span className="text-lg font-medium">Haus #{house.id + 1}</span>
+                <span className="text-lg font-medium">Haus {house.name}</span>
               </div>
 
               <div className="flex items-baseline justify-center mb-2">
