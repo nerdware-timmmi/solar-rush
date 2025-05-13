@@ -57,7 +57,7 @@ export function GameProvider({ children }: GameProviderProps) {
   // Energiequellen
   const [windEnergy, setWindEnergy] = useState(0)
   const [solarEnergy, setSolarEnergy] = useState(0)
-  const [nuclearEnergy, setNuclearEnergy] = useState(1000)
+  const [nuclearEnergy, setNuclearEnergy] = useState(100000) // Startwert auf 100.000 KW gesetzt
 
   // Häuser
   const [houses, setHouses] = useState<House[]>([])
@@ -82,27 +82,36 @@ export function GameProvider({ children }: GameProviderProps) {
     return () => clearInterval(timer)
   }, [gameActive])
 
-  // Energiequellen aktualisieren (jede Minute)
+  // Wind und Solarenergie aktualisieren (alle 10 Sekunden)
   useEffect(() => {
     if (!gameActive) return
 
     // Initial setzen
-    setWindEnergy(Math.floor(Math.random() * 4001)) // 0-4000 KW
-    setSolarEnergy(Math.floor(Math.random() * 4001)) // 0-4000 KW
+    setWindEnergy(Math.floor(Math.random() * 501) + 500) // 500-1000 KW
+    setSolarEnergy(Math.floor(Math.random() * 501) + 500) // 500-1000 KW
 
-    const energyTimer = setInterval(() => {
-      // Wind und Solar zufällig aktualisieren
-      setWindEnergy(Math.floor(Math.random() * 4001)) // 0-4000 KW
-      setSolarEnergy(Math.floor(Math.random() * 4001)) // 0-4000 KW
+    const solarWindTimer = setInterval(() => {
+      // Wind und Solar zufällig aktualisieren (500-1000 KW)
+      setWindEnergy((prev) => prev + Math.floor(Math.random() * 501) + 500)
+      setSolarEnergy((prev) => prev + Math.floor(Math.random() * 501) + 500)
+    }, 10000) // Alle 10 Sekunden
 
-      // Atomenergie konstant halten
-      setNuclearEnergy(1000) // Immer 1000 KW
-    }, 60000) // Jede Minute
-
-    return () => clearInterval(energyTimer)
+    return () => clearInterval(solarWindTimer)
   }, [gameActive])
 
-  // Neue Häuser generieren (jede Minute)
+  // Atomenergie aktualisieren (jede Minute)
+  useEffect(() => {
+    if (!gameActive) return
+
+    const nuclearTimer = setInterval(() => {
+      // Atomenergie um 100.000 KW erhöhen
+      setNuclearEnergy((prev) => prev + 100000)
+    }, 60000) // Jede Minute
+
+    return () => clearInterval(nuclearTimer)
+  }, [gameActive])
+
+  // Neue Häuser generieren (alle 20 Sekunden)
   useEffect(() => {
     if (!gameActive) return
 
@@ -111,7 +120,7 @@ export function GameProvider({ children }: GameProviderProps) {
 
     const houseTimer = setInterval(() => {
       createNewHouse()
-    }, 60000) // Jede Minute
+    }, 20000) // Alle 20 Sekunden
 
     return () => clearInterval(houseTimer)
   }, [gameActive])
@@ -142,7 +151,8 @@ export function GameProvider({ children }: GameProviderProps) {
 
   // Neues Haus erstellen
   const createNewHouse = () => {
-    const energySources: EnergySource[] = ["wind", "solar", "nuclear"]
+    // Nur Wind und Solar als bevorzugte Energiequellen
+    const energySources: EnergySource[] = ["wind", "solar"]
     const randomSource = energySources[Math.floor(Math.random() * energySources.length)]
     const randomEnergy = Math.floor(Math.random() * 2001) + 500 // 500-2500 KW
 
@@ -216,9 +226,9 @@ export function GameProvider({ children }: GameProviderProps) {
     setHouseIdCounter(0)
 
     // Initiale Energiewerte setzen
-    setWindEnergy(Math.floor(Math.random() * 4001)) // 0-4000 KW
-    setSolarEnergy(Math.floor(Math.random() * 4001)) // 0-4000 KW
-    setNuclearEnergy(1000) // Immer 1000 KW
+    setWindEnergy(Math.floor(Math.random() * 501) + 500) // 500-1000 KW
+    setSolarEnergy(Math.floor(Math.random() * 501) + 500) // 500-1000 KW
+    setNuclearEnergy(100000) // 100.000 KW
   }
 
   // Spiel zurücksetzen
@@ -230,7 +240,7 @@ export function GameProvider({ children }: GameProviderProps) {
     setHouses([])
     setWindEnergy(0)
     setSolarEnergy(0)
-    setNuclearEnergy(1000)
+    setNuclearEnergy(100000)
   }
 
   const value = {
