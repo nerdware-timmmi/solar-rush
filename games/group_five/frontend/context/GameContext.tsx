@@ -28,10 +28,17 @@ interface GameContextType {
   // Häuser
   houses: House[]
 
+  // Feedback-Effekte
+  showConfetti: boolean
+  showLightFlash: boolean
+  showRedFlash: boolean
+  playAtomSound: boolean
+  confettiPosition: { x: number, y: number } | null
+
   // Aktionen
   startGame: () => void
   resetGame: () => void
-  supplyEnergy: (houseId: string, source: EnergySource) => void
+  supplyEnergy: (houseId: string, source: EnergySource, mouseX: number, mouseY: number) => void
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -63,6 +70,13 @@ export function GameProvider({ children }: GameProviderProps) {
   // Häuser
   const [houses, setHouses] = useState<House[]>([])
   const [usedAnimalNames, setUsedAnimalNames] = useState<string[]>([])
+
+  // Feedback-Effekte
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [showLightFlash, setShowLightFlash] = useState(false)
+  const [showRedFlash, setShowRedFlash] = useState(false)
+  const [playAtomSound, setPlayAtomSound] = useState(false)
+  const [confettiPosition, setConfettiPosition] = useState<{ x: number, y: number } | null>(null)
 
   // Timer für das Spiel
   useEffect(() => {
@@ -150,9 +164,11 @@ export function GameProvider({ children }: GameProviderProps) {
           // Zeit reduzieren
           const newTimeLeft = house.timeLeft - 1
 
-          // Wenn Zeit abgelaufen ist, Punkt abziehen
+          // Wenn Zeit abgelaufen ist, Punkt abziehen und roten Blitz anzeigen
           if (newTimeLeft <= 0) {
             setScore((prevScore: number) => Math.max(0, prevScore - 1))
+            setShowRedFlash(true)
+            setTimeout(() => setShowRedFlash(false), 300)
             return { ...house, timeLeft: 0 }
           }
 
@@ -223,13 +239,19 @@ export function GameProvider({ children }: GameProviderProps) {
   }
 
   // Energie an ein Haus liefern
-  const supplyEnergy = (houseId: string, source: EnergySource) => {
+  const supplyEnergy = (houseId: string, source: EnergySource, mouseX: number, mouseY: number) => {
     // Haus finden
     const houseIndex = houses.findIndex((h: House) => h.id === houseId)
     if (houseIndex === -1) return
 
     const house = houses[houseIndex]
     const requiredEnergy = house.requiredEnergy
+
+    // Wenn Atomenergie ausgewählt wurde, Sound abspielen
+    if (source === "nuclear") {
+      setPlayAtomSound(true)
+      setTimeout(() => setPlayAtomSound(false), 500)
+    }
 
     // Prüfen, ob genug Energie vorhanden ist
     let availableEnergy = 0
@@ -260,11 +282,16 @@ export function GameProvider({ children }: GameProviderProps) {
         break
     }
 
-    // Punkte vergeben
+    // Punkte vergeben und entsprechende Effekte anzeigen
     if (house.preferredSource === source) {
       setScore((prev: number) => prev + 2) // 2 Punkte für bevorzugte Energiequelle
+      setConfettiPosition({ x: mouseX, y: mouseY }) // Position für Konfetti setzen
+      setShowConfetti(true) // Konfetti für 2 Punkte
+      setTimeout(() => setShowConfetti(false), 1000)
     } else {
       setScore((prev: number) => prev + 1) // 1 Punkt für andere Energiequelle
+      setShowLightFlash(true) // Lichtblitz für 1 Punkt
+      setTimeout(() => setShowLightFlash(false), 300)
     }
 
     // Namen freigeben und Haus entfernen
@@ -308,6 +335,11 @@ export function GameProvider({ children }: GameProviderProps) {
     solarEnergy,
     nuclearEnergy,
     houses,
+    showConfetti,
+    showLightFlash,
+    showRedFlash,
+    playAtomSound,
+    confettiPosition,
     startGame,
     resetGame,
     supplyEnergy

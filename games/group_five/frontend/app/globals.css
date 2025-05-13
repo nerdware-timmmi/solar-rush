@@ -92,3 +92,15 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Flash-Animation für Feedback-Effekte */
+@keyframes flash {
+  0% { opacity: 0; }
+  50% { opacity: 0.7; }
+  100% { opacity: 0; }
+}
+
+.animate-flash {
+  animation: flash 0.3s ease-out;
+  pointer-events: none;
+}

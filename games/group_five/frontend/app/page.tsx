@@ -1,12 +1,27 @@
+"use client"
+
 import CountdownTimer from "@/components/countdown-timer"
 import IconCards from "@/components/icon-cards"
 import HouseCards from "@/components/house-cards"
+import FeedbackEffects from "@/components/feedback-effects"
+import { useGameContext } from "@/context/GameContext"
 
 export default function Home() {
+  const { showConfetti, showLightFlash, showRedFlash, playAtomSound, confettiPosition } = useGameContext()
+
   return (
     <main className="container mx-auto px-4 py-8 space-y-8">
+      {/* Feedback-Effekte */}
+      <FeedbackEffects
+        showConfetti={showConfetti}
+        showLightFlash={showLightFlash}
+        showRedFlash={showRedFlash}
+        playAtomSound={playAtomSound}
+        confettiPosition={confettiPosition}
+      />
+
       <div className="flex justify-center">
-        <CountdownTimer initialTime={60} />
+        <CountdownTimer />
       </div>
 
       <section>

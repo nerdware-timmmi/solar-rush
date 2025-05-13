@@ -15,8 +15,11 @@ export default function IconCards() {
   ]
 
   // Funktion zum Liefern von Energie an ein Haus
-  const handleSupplyEnergy = (source: EnergySource, houseId: string) => {
-    supplyEnergy(houseId, source)
+  const handleSupplyEnergy = (source: EnergySource, houseId: string, event: React.MouseEvent) => {
+    // Mausposition erfassen
+    const mouseX = event.clientX
+    const mouseY = event.clientY
+    supplyEnergy(houseId, source, mouseX, mouseY)
   }
 
   return (
@@ -40,7 +43,7 @@ export default function IconCards() {
                     {houses.map((house) => (
                       <button
                         key={house.id}
-                        onClick={() => handleSupplyEnergy(item.source, house.id)}
+                        onClick={(event) => handleSupplyEnergy(item.source, house.id, event)}
                         disabled={item.kwh < house.requiredEnergy}
                         className={`px-3 py-1 text-xs rounded-md ${
                           item.kwh >= house.requiredEnergy
