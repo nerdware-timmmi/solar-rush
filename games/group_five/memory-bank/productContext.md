@@ -11,8 +11,4 @@
 
 nach 5 Minuten wird ein Fazit gezogen und die erreichen Punkten präsentiert
 
-Framework
-- NextJS
-- Typescript
-
-Das Frontend wird im Ordner frontend/ liegen und das werden wir gesondert generieren
+Baue das in meine NextJS Frontend welches in frontend/ und erweitere das Frontend vielleicht um die UI Elemente
