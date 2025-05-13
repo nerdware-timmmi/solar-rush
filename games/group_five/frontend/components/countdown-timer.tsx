@@ -3,9 +3,19 @@
 import { useGameContext } from "@/context/GameContext"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Trophy } from "lucide-react"
 
 export default function CountdownTimer() {
-  const { timeLeft, gameActive, gameOver, score, startGame, resetGame } = useGameContext()
+  const {
+    timeLeft,
+    gameActive,
+    gameOver,
+    score,
+    startGame,
+    resetGame,
+    showHighscoreModal,
+    closeHighscoreModal
+  } = useGameContext()
 
   // Format the time as MM:SS
   const formatTime = (timeInSeconds: number) => {
@@ -37,9 +47,20 @@ export default function CountdownTimer() {
               <p className="text-xl">Deine Punktzahl: {score}</p>
             </CardContent>
           </Card>
-          <Button onClick={resetGame} size="lg" className="w-full">
-            Neues Spiel
-          </Button>
+          <div className="flex gap-2 w-full">
+            <Button onClick={resetGame} size="lg" className="flex-1">
+              Neues Spiel
+            </Button>
+            <Button
+              onClick={() => !showHighscoreModal && closeHighscoreModal()}
+              size="lg"
+              variant="outline"
+              className="flex items-center gap-1"
+            >
+              <Trophy className="h-4 w-4" />
+              Highscores
+            </Button>
+          </div>
         </div>
       )}
     </div>

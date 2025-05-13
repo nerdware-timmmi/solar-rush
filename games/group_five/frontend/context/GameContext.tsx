@@ -35,10 +35,14 @@ interface GameContextType {
   playAtomSound: boolean
   confettiPosition: { x: number, y: number } | null
 
+  // Highscore
+  showHighscoreModal: boolean
+
   // Aktionen
   startGame: () => void
   resetGame: () => void
   supplyEnergy: (houseId: string, source: EnergySource, mouseX: number, mouseY: number) => void
+  closeHighscoreModal: () => void
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -78,6 +82,9 @@ export function GameProvider({ children }: GameProviderProps) {
   const [playAtomSound, setPlayAtomSound] = useState(false)
   const [confettiPosition, setConfettiPosition] = useState<{ x: number, y: number } | null>(null)
 
+  // Highscore
+  const [showHighscoreModal, setShowHighscoreModal] = useState(false)
+
   // Timer für das Spiel
   useEffect(() => {
     if (!gameActive) return
@@ -88,6 +95,8 @@ export function GameProvider({ children }: GameProviderProps) {
           clearInterval(timer)
           setGameActive(false)
           setGameOver(true)
+          // Highscore-Modal anzeigen, wenn das Spiel vorbei ist
+          setShowHighscoreModal(true)
           return 0
         }
         return prev - 1
@@ -333,6 +342,12 @@ export function GameProvider({ children }: GameProviderProps) {
     setWindEnergy(0)
     setSolarEnergy(0)
     setNuclearEnergy(100000)
+    setShowHighscoreModal(false)
+  }
+
+  // Highscore-Modal schließen
+  const closeHighscoreModal = () => {
+    setShowHighscoreModal(false)
   }
 
   const value = {
@@ -349,9 +364,11 @@ export function GameProvider({ children }: GameProviderProps) {
     showRedFlash,
     playAtomSound,
     confettiPosition,
+    showHighscoreModal,
     startGame,
     resetGame,
-    supplyEnergy
+    supplyEnergy,
+    closeHighscoreModal
   }
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>

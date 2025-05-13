@@ -1,0 +1,11 @@
+# Highscores für Solar Rush
+highscores:
+  - name: "Max Mustermann"
+    score: 1000
+    date: "2025-05-01"
+  - name: "Erika Musterfrau"
+    score: 850
+    date: "2025-05-02"
+  - name: "John Doe"
+    score: 750
+    date: "2025-05-03"
