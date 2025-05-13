@@ -1,97 +1,96 @@
 # Solar Rush
 
-Solar Rush ist ein Spiel, das Energiesammlung aus erneuerbaren Quellen, Hindernismanagement und Teamkoordination simuliert.
+Solar Rush is a game that simulates energy collection from renewable sources, obstacle management, and team coordination.
 
-## Backend-Optionen
+## Backend Options
 
-Dieses Projekt bietet zwei Backend-Optionen:
+This project offers two backend options:
 
-1. Cloud-Server
-   - Läuft auf Port 3001
-   - Generiert Zufallszahlen zwischen -50 und 0
+1. Cloud Server
+   - Runs on port 3001
+   - Generates random numbers between -50 and 0
 
-2. Sun-Server
-   - Läuft auf Port 3000
-   - Generiert Zufallszahlen zwischen 0 und 50
-   - Bietet Status-Informationen (night, cloudy, sunny)
+2. Sun Server
+   - Runs on port 3000
+   - Generates random numbers between 0 and 50
+   - Provides status information (night, cloudy, sunny)
 
-## Docker-Installation auf Mac
+## Docker Installation on Mac
 
-### Voraussetzungen
+### Prerequisites
 
-Um Docker auf einem Mac zu installieren, benötigen Sie:
-- macOS 10.15 oder neuer
-- Mindestens 4 GB RAM
-- Apple ID für den Download aus dem Mac App Store
+To install Docker on a Mac, you need:
+- macOS 10.15 or newer
+- At least 4 GB RAM
+- Apple ID for downloading from the Mac App Store
 
-### Installation von Docker Desktop
+### Installing Docker Desktop
 
-1. Besuchen Sie die [Docker Desktop für Mac-Downloadseite](https://www.docker.com/products/docker-desktop)
-2. Klicken Sie auf "Download for Mac"
-3. Öffnen Sie die heruntergeladene .dmg-Datei
-4. Ziehen Sie das Docker-Symbol in Ihren Applications-Ordner
-5. Öffnen Sie Docker aus dem Applications-Ordner
-6. Wenn Sie dazu aufgefordert werden, geben Sie Ihr Administrator-Passwort ein
-7. Warten Sie, bis Docker Desktop gestartet ist (das Docker-Symbol in der Menüleiste hört auf zu blinken)
+1. Visit the [Docker Desktop for Mac download page](https://www.docker.com/products/docker-desktop)
+2. Click on "Download for Mac"
+3. Open the downloaded .dmg file
+4. Drag the Docker icon to your Applications folder
+5. Open Docker from the Applications folder
+6. When prompted, enter your administrator password
+7. Wait until Docker Desktop has started (the Docker icon in the menu bar stops blinking)
 
-### Überprüfen der Installation
+### Verifying the Installation
 
-Öffnen Sie ein Terminal und führen Sie folgende Befehle aus, um zu überprüfen, ob Docker korrekt installiert wurde:
+Open a terminal and run the following commands to verify that Docker has been installed correctly:
 
 ```bash
 docker --version
 docker-compose --version
 ```
 
-## Starten der Backend-Server mit Docker Compose
+## Starting the Backend Servers with Docker Compose
 
-1. Öffnen Sie ein Terminal
-2. Navigieren Sie zum Projektverzeichnis:
+1. Open a terminal
+2. Navigate to the project directory:
    ```bash
-   cd /pfad/zum/solar-rush/games/group_five
+   cd /path/to/solar-rush/games/group_five
    ```
-3. Starten Sie die Docker-Container im Hintergrund:
+3. Start the Docker containers in the background:
    ```bash
    docker-compose up -d
    ```
-4. Überprüfen Sie, ob die Container laufen:
+4. Check if the containers are running:
    ```bash
    docker-compose ps
    ```
 
-## Zugriff auf die Backend-APIs
+## Accessing the Backend APIs
 
-Nach dem Start der Container können Sie auf die Backend-APIs zugreifen:
+After starting the containers, you can access the backend APIs:
 
 - Cloud Backend: http://localhost:3001
 - Sun Backend: http://localhost:3002
 
-## Stoppen der Backend-Server
+## Stopping the Backend Servers
 
-Um die Docker-Container zu stoppen, führen Sie folgenden Befehl aus:
+To stop the Docker containers, run the following command:
 
 ```bash
 docker-compose down
 ```
 
-## Logs anzeigen
+## Viewing Logs
 
-Um die Logs der laufenden Container anzuzeigen:
+To view the logs of the running containers:
 
 ```bash
 docker-compose logs
 ```
 
-Für kontinuierliche Logs:
+For continuous logs:
 
 ```bash
 docker-compose logs -f
 ```
 
-## Neustart der Container
+## Restarting the Containers
 
-Um die Container neu zu starten:
+To restart the containers:
 
 ```bash
 docker-compose restart
-```
