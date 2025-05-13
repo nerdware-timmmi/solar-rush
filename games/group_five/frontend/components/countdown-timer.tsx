@@ -14,7 +14,7 @@ export default function CountdownTimer() {
     startGame,
     resetGame,
     showHighscoreModal,
-    closeHighscoreModal
+    toggleHighscoreModal
   } = useGameContext()
 
   // Format the time as MM:SS
@@ -52,7 +52,7 @@ export default function CountdownTimer() {
               Neues Spiel
             </Button>
             <Button
-              onClick={() => !showHighscoreModal && closeHighscoreModal()}
+              onClick={() => toggleHighscoreModal()}
               size="lg"
               variant="outline"
               className="flex items-center gap-1"

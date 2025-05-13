@@ -17,7 +17,7 @@ export default function Home() {
     confettiPosition,
     score,
     showHighscoreModal,
-    closeHighscoreModal
+    toggleHighscoreModal
   } = useGameContext()
 
   return (
@@ -48,7 +48,7 @@ export default function Home() {
       <HighscoreModal
         score={score}
         isOpen={showHighscoreModal}
-        onClose={closeHighscoreModal}
+        onClose={toggleHighscoreModal}
       />
     </main>
   )

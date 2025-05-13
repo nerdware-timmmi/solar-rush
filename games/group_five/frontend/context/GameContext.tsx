@@ -42,7 +42,7 @@ interface GameContextType {
   startGame: () => void
   resetGame: () => void
   supplyEnergy: (houseId: string, source: EnergySource, mouseX: number, mouseY: number) => void
-  closeHighscoreModal: () => void
+  toggleHighscoreModal: () => void
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -345,9 +345,9 @@ export function GameProvider({ children }: GameProviderProps) {
     setShowHighscoreModal(false)
   }
 
-  // Highscore-Modal schließen
-  const closeHighscoreModal = () => {
-    setShowHighscoreModal(false)
+  // Highscore-Modal umschalten (öffnen/schließen)
+  const toggleHighscoreModal = () => {
+    setShowHighscoreModal(prev => !prev)
   }
 
   const value = {
@@ -368,7 +368,7 @@ export function GameProvider({ children }: GameProviderProps) {
     startGame,
     resetGame,
     supplyEnergy,
-    closeHighscoreModal
+    toggleHighscoreModal
   }
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
