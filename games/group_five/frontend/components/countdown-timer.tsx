@@ -1,28 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useGameContext } from "@/context/GameContext"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
-interface CountdownTimerProps {
-  initialTime: number
-}
-
-export default function CountdownTimer({ initialTime }: CountdownTimerProps) {
-  const [seconds, setSeconds] = useState(initialTime)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSeconds((prevSeconds) => {
-        if (prevSeconds <= 1) {
-          clearInterval(timer)
-          return 0
-        }
-        return prevSeconds - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [])
+export default function CountdownTimer() {
+  const { timeLeft, gameActive, gameOver, score, startGame, resetGame } = useGameContext()
 
   // Format the time as MM:SS
   const formatTime = (timeInSeconds: number) => {
@@ -32,10 +15,33 @@ export default function CountdownTimer({ initialTime }: CountdownTimerProps) {
   }
 
   return (
-    <Card className="w-full max-w-xs">
-      <CardContent className="flex items-center justify-center p-6">
-        <div className="text-4xl font-bold">{formatTime(seconds)}</div>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col items-center gap-4">
+      <Card className="w-full max-w-xs">
+        <CardContent className="flex flex-col items-center justify-center p-6 gap-2">
+          <div className="text-4xl font-bold">{formatTime(timeLeft)}</div>
+          <div className="text-xl">Punkte: {score}</div>
+        </CardContent>
+      </Card>
+
+      {!gameActive && !gameOver && (
+        <Button onClick={startGame} size="lg" className="w-full max-w-xs">
+          Spiel starten
+        </Button>
+      )}
+
+      {gameOver && (
+        <div className="flex flex-col items-center gap-4 w-full max-w-xs">
+          <Card className="w-full">
+            <CardContent className="p-6 text-center">
+              <h2 className="text-2xl font-bold mb-2">Spiel beendet!</h2>
+              <p className="text-xl">Deine Punktzahl: {score}</p>
+            </CardContent>
+          </Card>
+          <Button onClick={resetGame} size="lg" className="w-full">
+            Neues Spiel
+          </Button>
+        </div>
+      )}
+    </div>
   )
 }

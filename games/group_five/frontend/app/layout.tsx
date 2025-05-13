@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { GameProvider } from '@/context/GameContext'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'Solar Rush - Energiespiel',
+  description: 'Ein Spiel über Energiemanagement und Ressourcenverteilung',
   generator: 'v0.dev',
 }
 
@@ -13,8 +15,19 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="de">
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <GameProvider>
+            {children}
+          </GameProvider>
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
