@@ -18,26 +18,23 @@ export default function HighscoreModal({ score, isOpen, onClose }: HighscoreModa
   const [isHighscore, setIsHighscore] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  // Prüfen, ob der Score ein neuer Highscore ist
+  // Highscores laden und prüfen, ob ein Eintrag möglich ist
   useEffect(() => {
-    if (isOpen && score > 0) {
-      const checkHighscore = async () => {
-        const result = await isNewHighscore(score)
-        setIsHighscore(result)
-      }
-      checkHighscore()
-      loadHighscores().then(setHighscores)
+    if (isOpen) {
+      // Jetzt immer einen Highscore-Eintrag erlauben
+      setIsHighscore(isNewHighscore())
+      // Highscores direkt laden (keine Promise-Funktion mehr)
+      setHighscores(loadHighscores())
     }
-  }, [isOpen, score])
+  }, [isOpen])
 
   // Highscore speichern
-  const handleSave = async () => {
-    if (playerName.trim() && score > 0) {
-      await saveHighscore(playerName, score)
+  const handleSave = () => {
+    if (playerName.trim()) {
+      saveHighscore(playerName, score)
       setSaved(true)
       // Highscores neu laden
-      const updatedHighscores = await loadHighscores()
-      setHighscores(updatedHighscores)
+      setHighscores(loadHighscores())
     }
   }
 
@@ -55,7 +52,7 @@ export default function HighscoreModal({ score, isOpen, onClose }: HighscoreModa
           <div className="grid gap-4 py-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="name" className="text-sm font-medium">
-                Neuer Highscore! Gib deinen Namen ein:
+                Trage deinen Namen in die Highscore-Liste ein:
               </label>
               <Input
                 id="name"

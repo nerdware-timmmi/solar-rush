@@ -1,33 +1,28 @@
-import yaml from 'js-yaml';
-
 export interface Highscore {
   name: string;
   score: number;
   date: string;
 }
 
-export interface HighscoreData {
-  highscores: Highscore[];
-}
-
-// Funktion zum Laden der Highscores
-export async function loadHighscores(): Promise<Highscore[]> {
+// Funktion zum Laden der Highscores aus dem localStorage
+export function loadHighscores(): Highscore[] {
   try {
-    const response = await fetch('/highscores.yaml');
-    const yamlText = await response.text();
-    const data = yaml.load(yamlText) as HighscoreData;
-    return data.highscores || [];
+    const storedHighscores = localStorage.getItem('highscores');
+    if (storedHighscores) {
+      return JSON.parse(storedHighscores);
+    }
+    return [];
   } catch (error) {
     console.error('Fehler beim Laden der Highscores:', error);
     return [];
   }
 }
 
-// Funktion zum Speichern der Highscores
-export async function saveHighscore(name: string, score: number): Promise<boolean> {
+// Funktion zum Speichern der Highscores im localStorage
+export function saveHighscore(name: string, score: number): boolean {
   try {
     // Aktuelle Highscores laden
-    const highscores = await loadHighscores();
+    const highscores = loadHighscores();
 
     // Neuen Highscore hinzufügen
     const newHighscore: Highscore = {
@@ -44,17 +39,10 @@ export async function saveHighscore(name: string, score: number): Promise<boolea
     // Auf die Top 10 beschränken
     const topHighscores = highscores.slice(0, 10);
 
-    // In YAML konvertieren
-    const data: HighscoreData = { highscores: topHighscores };
-    const yamlText = yaml.dump(data);
+    // Im localStorage speichern
+    localStorage.setItem('highscores', JSON.stringify(topHighscores));
 
-    // Speichern (im Browser-Kontext können wir die Datei nicht direkt schreiben,
-    // daher verwenden wir localStorage als Fallback)
-    localStorage.setItem('highscores', yamlText);
-
-    // In einer echten Anwendung würde hier ein API-Aufruf zum Speichern der Datei erfolgen
-    // Da wir im Frontend sind, simulieren wir nur den Erfolg
-    console.log('Highscore gespeichert (simuliert):', newHighscore);
+    console.log('Highscore gespeichert:', newHighscore);
 
     return true;
   } catch (error) {
@@ -64,20 +52,7 @@ export async function saveHighscore(name: string, score: number): Promise<boolea
 }
 
 // Funktion zum Prüfen, ob ein Score ein neuer Highscore ist
-export async function isNewHighscore(score: number): Promise<boolean> {
-  try {
-    const highscores = await loadHighscores();
-
-    // Wenn weniger als 10 Einträge vorhanden sind, ist es automatisch ein Highscore
-    if (highscores.length < 10) {
-      return true;
-    }
-
-    // Sonst prüfen, ob der Score höher ist als der niedrigste Highscore
-    const lowestHighscore = highscores[highscores.length - 1];
-    return score > lowestHighscore.score;
-  } catch (error) {
-    console.error('Fehler beim Prüfen des Highscores:', error);
-    return false;
-  }
+// Wir erlauben jetzt immer einen Eintrag, auch bei 0 Punkten
+export function isNewHighscore(): boolean {
+  return true;
 }

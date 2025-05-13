@@ -5,6 +5,7 @@ import IconCards from "@/components/icon-cards"
 import HouseCards from "@/components/house-cards"
 import FeedbackEffects from "@/components/feedback-effects"
 import HighscoreModal from "@/components/highscore-modal"
+import Navbar from "@/components/navbar"
 import { useGameContext } from "@/context/GameContext"
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
 
   return (
     <main className="container mx-auto px-4 py-8 space-y-8">
+      <Navbar />
       {/* Feedback-Effekte */}
       <FeedbackEffects
         showConfetti={showConfetti}
