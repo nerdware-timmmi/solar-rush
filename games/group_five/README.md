@@ -11,7 +11,7 @@ Dieses Projekt bietet zwei Backend-Optionen:
    - Generiert Zufallszahlen zwischen -50 und 0
 
 2. Sun-Server
-   - Läuft auf Port 3002
+   - Läuft auf Port 3000
    - Generiert Zufallszahlen zwischen 0 und 50
    - Bietet Status-Informationen (night, cloudy, sunny)
 
